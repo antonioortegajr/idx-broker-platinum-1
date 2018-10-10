@@ -53,6 +53,14 @@ class Idx_Pages
         $next_create_event = wp_next_scheduled( 'idx_create_idx_pages' );
         $next_delete_event = wp_next_scheduled( 'idx_delete_idx_pages' );
         
+        
+        if( wp_next_scheduled ( 'idx_create_idx_pages' ) !== $idx_cron_schedule ) {
+			wp_clear_scheduled_hook( 'idx_create_idx_pages' );
+			wp_clear_scheduled_hook( 'iidx_delete_idx_pages' );
+			wp_unschedule_event( $next_create_event, 'idx_create_idx_pages' );
+	        wp_unschedule_event(  $next_delete_event, 'idx_delete_idx_pages' );
+		}
+        
         if( 'disabled' !== $idx_cron_schedule ){
           if (!wp_next_scheduled('idx_create_idx_pages')) {
             wp_schedule_event( time(), $idx_cron_schedule, 'idx_create_idx_pages');
