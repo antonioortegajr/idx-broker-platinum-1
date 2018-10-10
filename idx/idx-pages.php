@@ -50,6 +50,9 @@ class Idx_Pages
     {
         $idx_cron_schedule = get_option('idx_cron_schedule');
         
+        $next_create_event = wp_next_scheduled( 'idx_create_idx_pages' );
+        $next_delete_event = wp_next_scheduled( 'idx_delete_idx_pages' );
+        
         if( 'disabled' !== $idx_cron_schedule ){
           if (!wp_next_scheduled('idx_create_idx_pages')) {
             wp_schedule_event( time(), $idx_cron_schedule, 'idx_create_idx_pages');
@@ -57,6 +60,9 @@ class Idx_Pages
           if(!wp_next_scheduled('idx_delete_idx_pages')) {
             wp_schedule_event( time(), $idx_cron_schedule, 'idx_delete_idx_pages');
           }
+        } else {
+	        wp_unschedule_event( $next_create_event, 'idx_create_idx_pages' );
+	        wp_unschedule_event(  $next_delete_event, 'idx_delete_idx_pages' );
         }
     }
     
