@@ -9,6 +9,8 @@ class Idx_Pages
         $this->idx_api = new Idx_Api();
         //deletes all IDX pages for troubleshooting purposes
         // $this->delete_all_idx_pages();
+        add_option('idx_cron_schedule', 'threeminutes');
+	    register_setting( 'idx-platinum-settings-group', 'idx_cron_schedule' );
 
         add_action('admin_init', array($this, 'show_idx_pages_metabox_by_default'));
         add_filter('post_type_link', array($this, 'post_type_link_filter_func'), 10, 2);
@@ -46,15 +48,18 @@ class Idx_Pages
     //Schedule IDX Page update regularly.
     public function schedule_idx_page_update()
     {
+        $idx_cron_schedule = get_option('idx_cron_schedule');
         
-        if (!wp_next_scheduled('idx_create_idx_pages')) {
-           wp_schedule_event(time(), 'threeminutes', 'idx_create_idx_pages');
-        }
-        if(!wp_next_scheduled('idx_delete_idx_pages')) {
-           wp_schedule_event(time(), 'threeminutes', 'idx_delete_idx_pages');
+        if( 'disabled' !== $idx_cron_schedule ){
+          if (!wp_next_scheduled('idx_create_idx_pages')) {
+            wp_schedule_event( time(), $idx_cron_schedule, 'idx_create_idx_pages');
+          }
+          if(!wp_next_scheduled('idx_delete_idx_pages')) {
+            wp_schedule_event( time(), $idx_cron_schedule, 'idx_delete_idx_pages');
+          }
         }
     }
-
+    
     //to be called on plugin deactivation
     public static function unschedule_idx_page_update()
     {

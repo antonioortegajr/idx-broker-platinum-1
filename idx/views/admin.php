@@ -32,6 +32,11 @@ if ($wrapper_page_id) {
         $wrapper_page_url = get_page_link($wrapper_page_id);
     }
 }
+
+if( isset( $_POST['idx_cron_save'] ) ){
+  update_option( 'idx_cron_schedule', $_POST['idx_cron_save']);
+}
+
 ?>
 
 <div id="idxPluginWrap" class="wrap">
@@ -66,6 +71,25 @@ if ($api_error) {
 }
 ?>
                     </div>
+                </div>
+                <div id="refresh-cron-schedule" class="inlineBlock">
+	                <h3>Background Cron:</h3>
+	                <p>Choose how often the background refresh runs:</p>
+	                <?php $schedules = wp_get_schedules(); 
+		            
+		                
+		                $idx_cron_setting = get_option( 'idx_cron_schedule' );
+	                ?>
+                  <label for="idx_cron_schedule">Choose Schedule: </label>
+	                <select id="idx-cron-schedule" name="idx_cron_schedule">
+	                <?php
+		                foreach($schedules as $schedule_name => $schedule ) {
+			                echo '<option value="'.$schedule_name .'"'. selected( $idx_cron_setting, $schedule_name ) .'>'. $schedule['display'] .'</option>';
+		                }
+		                ?>
+		                <option value="disabled" <?php selected( $idx_cron_setting, 'disabled' ); ?>>Disabled</option>
+	                </select>
+                  <?php submit_button('Update Schedule'); ?>
                 </div>
                 <!-- dynamic wrapper page -->
                 <div id="dynamic_page">
