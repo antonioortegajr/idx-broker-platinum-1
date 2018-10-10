@@ -116,6 +116,9 @@ This plugin requires a PHP version higher than 5.6. For security reasons, we rec
 
 ## Changelog ##
 
+### 2.5.7 ###
+* New: Option to set how often the cron runs to refresh links.
+
 ### 2.5.6 ###
 * Fix: Now uses IDX api version 1.6.0.
 
